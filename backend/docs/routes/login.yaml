@@ -1,0 +1,38 @@
+paths:
+  /login:
+    post:
+      tags:
+      - User Controller
+      summary: Login as a user
+      requestBody:
+       required: true
+       content:
+         application/json:
+            schema:
+             type: object
+             required:
+               - email
+               - password
+             properties:
+               email:
+                 type: string
+                 default: johnDoe@mail.com
+               password:
+                 type: string
+                 default: johnDoe20!@
+      responses:
+       200:
+         description: OK
+         content:
+           application/json:
+            schema: 
+                type: object
+                properties:
+                  roles:
+                    type: array
+                    items:
+                      type: integer
+                  accessToken:
+                    type: string
+       401:
+         description: Unauthorized

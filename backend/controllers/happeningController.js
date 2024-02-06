@@ -1,10 +1,22 @@
-import mongoose from 'mongoose';
-import Happening from '../model/Happening.js';
-import httpStatus from '../helpers/httpStatusCodes.js';
+import mongoose from 'mongoose'
+import Happening from '../model/Happening.js'
+import httpStatus from '../helpers/httpStatusCodes.js'
 
 export const createHappening = async (req, res) => {
-	if (!req?.body?.title || !req?.body?.description || !req?.body?.place || !req?.body?.city || !req?.body?.address || !req?.body?.startsAt) {
-		return res.status(400).json({ 'message': 'Missing required inputs' });
+	if (!req?.body?.title) {
+		return res.status(400).json({ 'message': 'Missing title' })
+	} else if (!req?.body?.description) {
+		return res.status(400).json({ 'message': 'Missing description' })
+	} else if (!req?.body?.place) {
+		return res.status(400).json({ 'message': 'Missing place' })
+	} else if (!req?.body?.city) {
+		return res.status(400).json({ 'message': 'Missing city' })
+	} else if (!req?.body?.address) {
+		return res.status(400).json({ 'message': 'Missing address' })
+	} else if (!req?.body?.startsAt) {
+		return res.status(400).json({ 'message': 'Missing startsAt' })
+	} else if (!req?.file) {
+		return res.status(400).json({ 'message': 'Missing thumbnail' })
 	}
 
 	try {
@@ -15,39 +27,42 @@ export const createHappening = async (req, res) => {
 			city: req.body.city,
 			address: req.body.address,
 			startsAt: req.body.startsAt,
+			thumbnail: req.file.filename,
 			user_id: req.user._id,
-		});
+		})
 
-		console.log(req.user);
-
-		res.status(201).json(result);
+		res.status(201).json(result)
 	} catch (error) {
-		console.error(error);
+		console.error(error)
 	}
-};
+}
 
 export const getHappening = async (req, res) => {
 
 	if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-		return res.sendStatus(404);
+		return res.sendStatus(404)
 	}
 
-	const result = await Happening.findById(req.params.id).exec();
+	const result = await Happening.findById(req.params.id).exec()
 
 	if (result == null) {
-		return res.sendStatus(404);
+		return res.sendStatus(404)
 	}
 
-	return res.status(httpStatus.OK).json(result);
+	return res.status(httpStatus.OK).json(result)
 
-};
+}
 
 export const getHappenings = async (req, res) => {
-	const result = await Happening.find();
+	const result = await Happening.find().lean()
 
-	if (result == null) {
-		return res.sendStatus(404);
+	for (let i = 0; i < result.length; i++) {
+		result[i].thumbnail = `http://localhost:3500/img/thumbnails/${result[i].thumbnail}`
 	}
 
-	return res.status(httpStatus.OK).json({ data: result });
-};
+	if (result == null) {
+		return res.sendStatus(404)
+	}
+
+	return res.status(httpStatus.OK).json({ data: result })
+}

@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import User from '../model/User.js'
 import httpStatus from '../helpers/httpStatusCodes.js'
+import ACCOUNT_ROLES from '../config/accountRoles.js'
 
 const handleNewUser = async (req, res) => {
 	const { username, email, password } = req.body
@@ -24,6 +25,7 @@ const handleNewUser = async (req, res) => {
 			"username": username,
 			'email': email,
 			"password": hashedPassword,
+			"roles": [ACCOUNT_ROLES.User]
 		})
 
 		res.status(httpStatus.CREATED).json({ 'message': `New user ${username} created!` })

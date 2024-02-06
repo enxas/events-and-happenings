@@ -27,6 +27,10 @@ const happeningSchema = new Schema({
         type: Date,
         required: true
     },
+	thumbnail: {
+        type: String,
+        required: true
+    },
 	user_id: {
         type: Schema.Types.ObjectId,
 		ref: 'User',

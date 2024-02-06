@@ -3,7 +3,6 @@ import 'dotenv/config'
 import express from 'express'
 import path from 'path'
 import cookieParser from 'cookie-parser'
-import { fileURLToPath } from 'url'
 import cors from 'cors'
 
 import connectDB from './config/dbConnetion.js'
@@ -16,18 +15,19 @@ import refreshRoute from './routes/refresh.js'
 import logoutRoute from './routes/logout.js'
 import happeningRoute from './routes/happening.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+import swaggerDocs from './swagger.js'
+
+const __dirname = import.meta.dirname
 
 const app = express()
 const PORT = process.env.PORT || 3500
 
 // Handle options credentials check - before CORS!
 // and fetch cookies credentials requirement
-app.use(credentials);
+app.use(credentials)
 
 // Cross Origin Resource Sharing
-app.use(cors(corsOptions));
+app.use(cors(corsOptions))
 
 // built-in middleware to handle urlencoded form data
 app.use(express.urlencoded({ extended: false }))
@@ -51,4 +51,5 @@ app.use('/events', happeningRoute)
 // connect to database
 connectDB(() => {
 	app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+	swaggerDocs(app, PORT)
 })

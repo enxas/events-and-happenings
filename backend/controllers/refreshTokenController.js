@@ -6,6 +6,7 @@ import { createAccessToken } from '../helpers/helpers.js'
 
 const handleRefreshToken = async (req, res) => {
 	const cookies = req.cookies
+	
 	if (!cookies?.jwt) {
 		return res.sendStatus(httpStatus.UNAUTHORIZED)
 	}
@@ -23,9 +24,9 @@ const handleRefreshToken = async (req, res) => {
 		{ algorithm: config.jwtAlgorithm },
 		(error, decoded) => {
 			if (error || foundUser._id.toString() !== decoded.id) return res.sendStatus(httpStatus.FORBIDDEN)
-
+			
 			const accessToken = createAccessToken(foundUser, foundUser.roles)
-			res.json({ roles: foundUser.roles, accessToken })
+			res.json({ roles: foundUser.roles, accessToken, username: foundUser.username })
 		}
 	)
 }

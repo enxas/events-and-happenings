@@ -3,8 +3,8 @@ const httpStatus = {
 	// 2xx - Successful
 	OK: 200, 				// operation completed successfully
 	CREATED: 201,			// resource was successfully created
-	ACCEPTED: 202,			// response was successfully received, but server will respond later, because job has been queued
-	NO_CONTENT: 204,		// request was successful, but there is no data to return, liek in delete request
+	ACCEPTED: 202,			// request was successful, but server will respond later, because job has been queued
+	NO_CONTENT: 204,		// request was successful, but there is no data to return, like in delete request
 	// 3xx - Redirection
 	MOVED_PERMANENTLY: 301,	// resource has been permanently moved to a new location
 	FOUND: 302,				// resource has been temporarily moved to a new location
