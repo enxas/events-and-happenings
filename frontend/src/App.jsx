@@ -10,6 +10,7 @@ import RequireAuth from "./components/RequireAuth"
 import ACCOUNT_ROLES from "./config/accountRoles"
 import Index from "./components/Index"
 import HappeningCreateUpdate from "./components/HappeningCreateUpdate"
+import HappeningPage from "./components/HappeningPage"
 
 function App() {
 	return (
@@ -27,9 +28,11 @@ function App() {
 						<Route path="home" element={<Home />} />
 					</Route>
 					<Route element={<RequireAuth allowedRoles={[ACCOUNT_ROLES.User, ACCOUNT_ROLES.Admin]} />}>
-						<Route path="/happenings/create" element={<HappeningCreateUpdate />} />
+						<Route path="happenings/create" element={<HappeningCreateUpdate />} />
 					</Route>
 				</Route>
+
+				<Route path="happenings/:id" element={<HappeningPage />} />
 
 				{/* catch all */}
 				<Route path="*" element={<Missing />} />

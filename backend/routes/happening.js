@@ -1,8 +1,10 @@
 import express from 'express'
-import { getHappenings, getHappening, createHappening } from '../controllers/happeningController.js'
+import { getHappenings, getHappening, createHappening, deleteHappening } from '../controllers/happeningController.js'
 import verifyJWT from '../middleware/verifyJWT.js'
 import multer from 'multer'
 import path from 'path'
+import verifyRoles from '../middleware/verifyRoles.js'
+import ACCOUNT_ROLES from '../config/accountRoles.js'
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -22,10 +24,9 @@ const router = express.Router()
 router.route('/')
 	.get(getHappenings)
 	.post(verifyJWT, upload.single('thumbnail'), createHappening)
-//.put(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.Editor), employeesController.updateEmployee)
-//.delete(verifyRoles(ROLES_LIST.Admin), employeesController.deleteEmployee);
 
 router.route('/:id')
 	.get(getHappening)
+	.delete(verifyJWT, verifyRoles(ACCOUNT_ROLES.Admin), deleteHappening)
 
 export default router

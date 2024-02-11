@@ -15,7 +15,7 @@ const handleLogin = async (req, res) => {
 	// check if user with provided details exist
 	const foundUser = await User.findOne({ email: email }).exec()
 	if (!foundUser) {
-		return res.sendStatus(httpStatus.UNAUTHORIZED)
+		return res.status(httpStatus.UNAUTHORIZED).json({ 'message': 'Email and/or password are incorrect.' })
 	}
 
 	// check if password is correct
@@ -39,7 +39,7 @@ const handleLogin = async (req, res) => {
 		res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: config.refreshTokenExpirationMs })
 
 		// send authorization roles and access token to user
-		res.json({ roles: foundUser.roles, accessToken, username: foundUser.username })
+		res.json({ id: foundUser._id, roles: foundUser.roles, accessToken, username: foundUser.username })
 
 	} else {
 		res.sendStatus(httpStatus.UNAUTHORIZED)

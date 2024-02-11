@@ -14,6 +14,7 @@ import loginRoute from './routes/login.js'
 import refreshRoute from './routes/refresh.js'
 import logoutRoute from './routes/logout.js'
 import happeningRoute from './routes/happening.js'
+import userRoute from './routes/user.js'
 
 import swaggerDocs from './swagger.js'
 
@@ -47,6 +48,7 @@ app.use('/register', registerRoute)
 app.use('/logout', logoutRoute)
 app.use('/refresh', refreshRoute)
 app.use('/events', happeningRoute)
+app.use('/users', userRoute)
 
 // connect to database
 connectDB(() => {

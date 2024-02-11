@@ -26,7 +26,7 @@ const handleRefreshToken = async (req, res) => {
 			if (error || foundUser._id.toString() !== decoded.id) return res.sendStatus(httpStatus.FORBIDDEN)
 			
 			const accessToken = createAccessToken(foundUser, foundUser.roles)
-			res.json({ roles: foundUser.roles, accessToken, username: foundUser.username })
+			res.json({ id: foundUser._id, roles: foundUser.roles, accessToken, username: foundUser.username })
 		}
 	)
 }

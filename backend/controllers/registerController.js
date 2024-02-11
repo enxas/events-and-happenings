@@ -4,10 +4,12 @@ import httpStatus from '../helpers/httpStatusCodes.js'
 import ACCOUNT_ROLES from '../config/accountRoles.js'
 
 const handleNewUser = async (req, res) => {
-	const { username, email, password } = req.body
+	const { username, email, password, passwordRepeat } = req.body
 
 	if (!username || !email || !password) {
 		return res.status(httpStatus.BAD_REQUEST).json({ 'message': 'All fields are required' })
+	} else if (password != passwordRepeat) {
+		return res.status(httpStatus.BAD_REQUEST).json({ 'message': 'Passwords must match' })
 	}
 
 	// check if user with provided details exist

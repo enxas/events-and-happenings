@@ -1,135 +1,104 @@
-import { useRef, useState, useEffect } from "react"
-import axios from "../api/axios"
+import { useState } from "react"
 import { Link } from "react-router-dom"
 import { register } from "../api/user"
-
+import ApiError from "../errors/ApiError"
+import { Button, Container, Form, Row } from "react-bootstrap"
 
 const Register = () => {
-	const userRef = useRef()
-	const errRef = useRef()
-
 	const [email, setEmail] = useState("")
-
-	const [user, setUser] = useState("")
-	const [validName, setValidName] = useState(false)
-
-	const [pwd, setPwd] = useState("")
-	const [validPwd, setValidPwd] = useState(false)
-
-	const [matchPwd, setMatchPwd] = useState("")
-	const [validMatch, setValidMatch] = useState(false)
+	const [username, setUsername] = useState("")
+	const [password, setPassword] = useState("")
+	const [passwordRepeat, setPasswordRepeat] = useState("")
 
 	const [errMsg, setErrMsg] = useState("")
 	const [success, setSuccess] = useState(false)
 
-	useEffect(() => {
-		setValidName(user)
-	}, [user])
-
-	useEffect(() => {
-		setValidPwd(pwd)
-		setValidMatch(pwd === matchPwd)
-	}, [pwd, matchPwd])
-
-	useEffect(() => {
-		setErrMsg("")
-	}, [user, pwd, matchPwd])
-
 	const handleSubmit = async (e) => {
 		e.preventDefault()
 
-		const [response, error] = await register(email, user, pwd)
+		const registerRes = await register(email, username, password, passwordRepeat)
 
-		// TODO: remove console.logs before deployment
-		console.log(JSON.stringify(response))
-		//console.log(JSON.stringify(response))
-		setSuccess(true)
-		//clear state and controlled inputs
-		setUser("")
-		setPwd("")
-		setMatchPwd("")
+		if (registerRes instanceof ApiError) {
+			setErrMsg(registerRes.response.data.message)
+		} else {
+			setSuccess(true)
+			setUsername("")
+			setPassword("")
+			setPasswordRepeat("")
+		}
 	}
 
 	return (
-		<>
+		<Container>
 			{success ? (
-				<section>
+				<Row>
 					<h1>Success!</h1>
 					<p>
-						<a href="#">Sign In</a>
+						<Link to="/login">Sign In</Link>
 					</p>
-				</section>
+				</Row>
 			) : (
-				<section>
-					<p
-						ref={errRef}
-						className={errMsg ? "errmsg" : "offscreen"}
-						aria-live="assertive"
-					>
-						{errMsg}
-					</p>
+				<Row>
 					<h1>Register</h1>
-					<form onSubmit={handleSubmit}>
-						<label htmlFor="email">Email:</label>
-						<input
-							type="text"
-							id="email"
-							autoComplete="off"
-							onChange={(e) => setEmail(e.target.value)}
-							value={email}
-							required
-							aria-invalid={validName ? "false" : "true"}
-							aria-describedby="uidnote"
-						/>
 
-						<label htmlFor="username">Username:</label>
-						<input
-							type="text"
-							id="username"
-							autoComplete="off"
-							onChange={(e) => setUser(e.target.value)}
-							value={user}
-							required
-							aria-invalid={validName ? "false" : "true"}
-							aria-describedby="uidnote"
-						/>
+					{errMsg && <p>{errMsg}</p>}
 
-						<label htmlFor="password">Password:</label>
-						<input
-							type="password"
-							id="password"
-							onChange={(e) => setPwd(e.target.value)}
-							value={pwd}
-							required
-							aria-invalid={validPwd ? "false" : "true"}
-							aria-describedby="pwdnote"
-						/>
+					<Form onSubmit={handleSubmit}>
+						<Form.Group className="mb-3">
+							<Form.Label>Email</Form.Label>
+							<Form.Control
+								type="text"
+								name="username"
+								placeholder="Enter email"
+								required
+								onChange={(e) => setEmail(e.target.value)}
+								value={email}
+							/>
+						</Form.Group>
 
-						<label htmlFor="password_re">Repeat Password:</label>
-						<input
-							type="password"
-							id="password_re"
-							onChange={(e) => setMatchPwd(e.target.value)}
-							value={matchPwd}
-							required
-							aria-invalid={validPwd ? "false" : "true"}
-							aria-describedby="pwdnote"
-						/>
+						<Form.Group className="mb-3">
+							<Form.Label>Username</Form.Label>
+							<Form.Control
+								type="text"
+								name="username"
+								placeholder="Enter username"
+								required
+								onChange={(e) => setUsername(e.target.value)}
+								value={username}
+							/>
+						</Form.Group>
 
-						<button disabled={!validName || !validPwd ? true : false}>
+						<Form.Group className="mb-3">
+							<Form.Label>Password</Form.Label>
+							<Form.Control
+								type="password"
+								name="password"
+								placeholder="Enter password"
+								required
+								onChange={(e) => setPassword(e.target.value)}
+								value={password}
+							/>
+						</Form.Group>
+
+						<Form.Group className="mb-3">
+							<Form.Label>Repeat Password</Form.Label>
+							<Form.Control
+								type="password"
+								name="password_re"
+								placeholder="Repeat password"
+								required
+								onChange={(e) => setPasswordRepeat(e.target.value)}
+								value={passwordRepeat}
+							/>
+						</Form.Group>
+
+						<Button className="float-end" variant="primary" type="submit">
 							Sign Up
-						</button>
-					</form>
-					<p>
-						Already registered?
-						<br />
-						<span className="line">
-							<Link to="/">Sign In</Link>
-						</span>
-					</p>
-				</section>
+						</Button>
+					</Form>
+				</Row>
 			)}
-		</>
+		</Container>
 	)
 }
 

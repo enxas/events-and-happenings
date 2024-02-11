@@ -1,33 +1,47 @@
-import { useNavigate, Link } from "react-router-dom";
-import useLogout from "../hooks/useLogout";
+import { Link, useNavigate } from "react-router-dom"
+import useLogout from "../hooks/useLogout"
+import { Container } from "react-bootstrap"
+import { useEffect, useState } from "react"
+import useAuth from "../hooks/useAuth"
+import { getUserEvents } from "../api/user"
 
 const Home = () => {
-    const navigate = useNavigate();
-    const logout = useLogout();
+	const navigate = useNavigate()
+	const logout = useLogout()
+	const { auth } = useAuth()
 
-    const signOut = async () => {
-        await logout();
-        navigate('/linkpage');
-    }
+	const signOut = async () => {
+		await logout()
+		navigate("/linkpage")
+	}
 
-    return (
-        <section>
-            <h1>Home</h1>
-            <br />
-            <p>You are logged in!</p>
-            <br />
-            <Link to="/editor">Go to the Editor page</Link>
-            <br />
-            <Link to="/admin">Go to the Admin page</Link>
-            <br />
-            <Link to="/lounge">Go to the Lounge</Link>
-            <br />
-            <Link to="/linkpage">Go to the link page</Link>
-            <div className="flexGrow">
-                <button onClick={signOut}>Sign Out</button>
-            </div>
-        </section>
-    )
+	const [happenings, setHappenings] = useState([])
+
+	useEffect(() => {
+		async function init() {
+			const happeningsRes = await getUserEvents(auth.id)
+			setHappenings(happeningsRes.data)
+			console.log(happeningsRes)
+		}
+
+		init()
+	}, [])
+
+	return (
+		<Container>
+			<h1>Home</h1>
+			<p>Your announced events:</p>
+			{happenings.length > 0 ? (
+				happenings.map((happening) => (
+					<Link to={`/happenings/${happening._id}`} key={happening._id}>
+						<p>{happening.title}</p>
+					</Link>
+				))
+			) : (
+				<p>None so far</p>
+			)}
+		</Container>
+	)
 }
 
 export default Home

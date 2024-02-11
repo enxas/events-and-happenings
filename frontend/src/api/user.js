@@ -1,3 +1,4 @@
+import { formatErrorResponse } from "../utils/utils"
 import axios from "./axios"
 
 async function login(email, password) {
@@ -9,25 +10,24 @@ async function login(email, password) {
 				withCredentials: true,
 			}
 		)
-		return [response.data, null]
-	} catch (err) {
-		return [null, err?.response.data]
+		return response.data
+	} catch (error) {
+		return formatErrorResponse(error)
 	}
 }
 
-async function register(email, username, password) {
+async function register(email, username, password, passwordRepeat) {
 	try {
 		const response = await axios.post('/register',
-			JSON.stringify({ email, username, password }),
+			JSON.stringify({ email, username, password, passwordRepeat }),
 			{
 				headers: { 'Content-Type': 'application/json' },
 				withCredentials: true,
 			}
 		)
-		console.log(response)
-		return [response.data, null]
-	} catch (err) {
-		return [null, err?.response.data]
+		return response.data
+	} catch (error) {
+		return formatErrorResponse(error)
 	}
 }
 
@@ -39,10 +39,22 @@ async function logout(axiosPrivate) {
 				withCredentials: true,
 			}
 		)
-		console.log(response)
-		return [response.data, null]
-	} catch (err) {
-		return [null, err?.response.data]
+		return response.data
+	} catch (error) {
+		return formatErrorResponse(error)
+	}
+}
+
+async function getUserEvents(id) {
+	try {
+		const response = await axios.get(`/users/${id}/events`,
+			{
+				headers: { 'Content-Type': 'application/json' },
+			}
+		)
+		return response.data
+	} catch (error) {
+		return formatErrorResponse(error)
 	}
 }
 
@@ -50,4 +62,5 @@ export {
 	login,
 	register,
 	logout,
+	getUserEvents,
 }

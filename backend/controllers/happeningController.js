@@ -49,8 +49,9 @@ export const getHappening = async (req, res) => {
 		return res.sendStatus(404)
 	}
 
-	return res.status(httpStatus.OK).json(result)
+	result.thumbnail = `http://localhost:3500/img/thumbnails/${result.thumbnail}`
 
+	return res.status(httpStatus.OK).json({ data: result })
 }
 
 export const getHappenings = async (req, res) => {
@@ -65,4 +66,14 @@ export const getHappenings = async (req, res) => {
 	}
 
 	return res.status(httpStatus.OK).json({ data: result })
+}
+
+export const deleteHappening = async (req, res) => {
+	if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+		return res.sendStatus(404)
+	}
+
+	const result = await Happening.findByIdAndDelete(req.params.id)
+
+	return res.status(httpStatus.OK).json({ message: 'deleted' })
 }

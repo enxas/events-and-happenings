@@ -6,6 +6,7 @@ import { default as BNavbar } from "react-bootstrap/Navbar"
 import NavDropdown from "react-bootstrap/NavDropdown"
 import useAuth from "../hooks/useAuth"
 import useAxiosPrivate from "../hooks/useAxiosPrivate"
+import ApiError from "../errors/ApiError"
 
 export default function Navbar() {
 	const navigate = useNavigate()
@@ -13,9 +14,10 @@ export default function Navbar() {
 	const privateAxios = useAxiosPrivate()
 
 	async function handleLogout() {
-		const [response, error] = await logout(privateAxios)
-		if (error === null) {
-			setAuth({});
+		const logoutRes = await logout(privateAxios)
+
+		if (logoutRes instanceof ApiError === false) {
+			setAuth({})
 			navigate("/")
 		}
 	}
@@ -38,7 +40,12 @@ export default function Navbar() {
 								title={auth.username || "guest"}
 								id="collapsible-nav-dropdown"
 							>
-								<NavDropdown.Item as={Link} to="/happenings/create">Create Event</NavDropdown.Item>
+								<NavDropdown.Item as={Link} to="/home">
+									Home
+								</NavDropdown.Item>
+								<NavDropdown.Item as={Link} to="/happenings/create">
+									Create Event
+								</NavDropdown.Item>
 								<NavDropdown.Divider />
 								<NavDropdown.Item as={Link} onClick={handleLogout}>
 									Logout
